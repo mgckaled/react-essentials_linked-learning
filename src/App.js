@@ -1,17 +1,9 @@
-import React from "react";
+import React, { useState, useReducer } from "react";
 import "./App.css";
 import restaurant from "./restaurant.jpg";
 
 function SecretComponent() {
 	return <h1>Super secret information for authorized users only</h1>;
-}
-
-function RegularComponent() {
-	return (
-		<h3>
-			<i>Everyone can see this component</i>
-		</h3>
-	);
 }
 
 function Header(props) {
@@ -59,16 +51,37 @@ const dishes = [
 	"Cake",
 ];
 
+// Creating a key for each list element
 const dishObjects = dishes.map((dish, i) => ({ id: i, title: dish }));
 
+function CheckBox() {
+	const [checked, toggle] = useReducer((checked) => !checked, false);
+
+	return (
+		<>
+			<input type="checkbox" value={checked} onChange={toggle} />
+			<p>{checked ? "checked" : "not checked"}</p>
+		</>
+	);
+}
+
+// Use setState function to configure an action (onClick button)
 function App(props) {
+	const [timeOrder, makeOrder] = useState("");
+	console.log(timeOrder);
+
 	if (props.authorized) {
 		return (
 			<div className="App">
-				<RegularComponent />
 				<Header name="Horacio" />
 				<Main adjective="amazing" dishes={dishObjects} />
+
+				<p>Make your order {timeOrder}</p>
+				<button onClick={() => makeOrder("Now!")}>Now</button>
+				<button onClick={() => makeOrder("at your time!")}>at any time</button>
+
 				<Footer year={new Date().getFullYear()} />
+				<CheckBox />
 			</div>
 		);
 	} else {
